@@ -1,0 +1,6 @@
+[submodule "OoT-Randomizer"]
+	path = OoT-Randomizer
+	url = https://github.com/Roman971/OoT-Randomizer.git
+[submodule "plando-random-settings"]
+	path = plando-random-settings
+	url = https://github.com/matthewkirby/plando-random-settings.git
