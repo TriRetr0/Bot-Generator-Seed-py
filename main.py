@@ -14,7 +14,9 @@ class MyClient(discord.Client):
         if message.author == self.user:
             return
 
-        await commands.execute(message, message.content)
+        command = message.content.split(" ")[0]
+        args = " ".join(message.content.split(" ")[1:])
+        await commands.execute(message, command, args)
 
 client = MyClient()
 client.run(os.getenv("TOKEN"))
