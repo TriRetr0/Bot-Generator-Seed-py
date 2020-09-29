@@ -30,7 +30,7 @@ async def generate_random(message, args):
     process.execute("cd OoT-Randomizer/plando-random-settings; python3 PlandoRandomSettings.py; cd ../..")
     await print_not_send(message, "Random settings generated")
     await print_not_send(message, "Copying settings file into randomizer")
-    process.execute("cp "+ __basedir +"/settings/settings.ran.std" + " " + __basedir +"/OoT-Randomizer/settings.sav")
+    process.execute("cp "+ __basedir +"/settings/settings.sav.ran" + " " + __basedir +"/OoT-Randomizer/settings.sav")
     await print_not_send(message, "Settings file copied")
     await generate(message)
 
