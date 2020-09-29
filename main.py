@@ -15,9 +15,10 @@ class MyClient(discord.Client):
         if message.author == self.user:
             return
         
-        channels_allowed = os.getenv("CHANNELS").split(',')
-        if not message.channel.name in channels_allowed:
-            return
+        if not isinstance(message.channel, discord.channel.DMChannel):
+            channels_allowed = os.getenv("CHANNELS").split(',')
+            if not message.channel.name in channels_allowed:
+                return
 
         command = message.content.split(" ")[0]
         args = " ".join(message.content.split(" ")[1:])
