@@ -1,4 +1,5 @@
 import time
+import discord
 
 def log(content):
     if(not content):
@@ -10,6 +11,14 @@ def log(content):
     f.close()
 
 async def print_send(message, content):
+    print(content)
+    embedVar = discord.Embed(title="GeneRawz", description=f"{content}\n\nfor {message.author.mention}")
+    embedVar.set_thumbnail(url="https://cdn.discordapp.com/avatars/753907038035247194/f5de60765226054bc282234501a807f7.webp?size=64")
+    embedVar.set_footer(text="1.1 Dev")
+    msg = await message.channel.send(embed=embedVar)
+    log(content)
+
+async def print_embed(message, content):
     print(content)
     await message.channel.send(content + '\n')
     log(content)

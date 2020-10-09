@@ -23,7 +23,7 @@ class MyClient(discord.Client):
 
         command = message.content.split(" ")[0]
         args = " ".join(message.content.split(" ")[1:])
-        print_not_send(message, message.author.name + ": " + message.content)
+        await print_not_send(message, message.author.name + ": " + message.content)
         await commands.execute(message, command, args)
 
 client = MyClient()

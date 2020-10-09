@@ -10,7 +10,7 @@ async def generate(message):
     await print_not_send(message, res)
     await print_not_send(message, "Seed generated")
     files = list(filter(lambda file: file, process.execute("ls "+ __basedir +"/files").split("\n")))
-    await print_reply(message, "Files genereted :")
+    await print_send(message, "Files genereted :")
     path_files = list(map(lambda file: (__basedir + "/files/" + file), files))
     for file in path_files:
         await message.channel.send(file=discord.File(file))
@@ -18,14 +18,14 @@ async def generate(message):
     await print_not_send(message, 'Seed removed')
 
 async def generate_standard(message, args):
-    await print_send(message, "Generating standard seed in progress")
+    await print_send(message, "Generate seed with settings : standard")
     await print_not_send(message, "Copying settings file into randomizer")
     process.execute("cp "+ __basedir +"/settings/settings.sav.std" + " " + __basedir +"/OoT-Randomizer/settings.sav")
     await print_not_send(message, "Settings file copied")
     await generate(message)
 
 async def generate_random(message, args):
-    await print_send(message, "Generating standard seed in progress")
+    await print_send(message, "Generating random seed in progress")
     await print_not_send(message, "Generating random settings")
     process.execute("cd OoT-Randomizer/plando-random-settings; python3 PlandoRandomSettings.py; cd ../..")
     await print_not_send(message, "Random settings generated")

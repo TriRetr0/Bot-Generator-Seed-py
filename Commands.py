@@ -20,7 +20,7 @@ class Commands:
 commands = Commands()
 
 async def print_help(message, args):
-    await print_reply(message, commands.help_string())
+    await print_send(message, commands.help_string())
 
 async def print_version(message, args):
     f = open("./OoT-Randomizer/version.py", "r")
