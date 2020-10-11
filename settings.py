@@ -5,7 +5,6 @@ def setsettings(ROMPATH, OUTPATH, custom="AJ2WBAVSA8EA2BCAAAAEUAAAFAACABSAGAC4SJ
     settingfile = open("settings/settings.sav.default", "r")
     settingswrite = open("settings/settings.sav", "r+")
     for i in settingfile.readlines():
-        print(i)
         if numberlines == 1:
             settingswrite.write(f'    "rom": "{ROMPATH}",\n')
         elif numberlines == 2:
@@ -13,7 +12,6 @@ def setsettings(ROMPATH, OUTPATH, custom="AJ2WBAVSA8EA2BCAAAAEUAAAFAACABSAGAC4SJ
         elif numberlines == 3:
             if custom == "random":
                 settingswrite.write(f'    "enable_distribution_file": true,\n')
-                print("test")
             else:
                 settingswrite.write(f'    "enable_distribution_file": false,\n')
         elif numberlines == 4:

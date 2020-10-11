@@ -1,0 +1,2 @@
+----------11-10-2020|21-08-48----------
+Command raised an exception: FileNotFoundError: [Errno 2] No such file or directory: 'files'

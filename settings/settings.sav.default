@@ -1,6 +1,6 @@
 {
-    "rom": "/home/marceau/Bureau/Jeux/Rom/N64/1.0/Legend of Zelda, The - Ocarina of Time (USA).z64",
-    "output_dir": "/home/marceau/Bureau/Bot/python/Bot-Generator-Seed-py/NEW/files",
+    "rom": "",
+    "output_dir": "",
     "enable_distribution_file": false,
     "distribution_file": "",
     "count": 1,
