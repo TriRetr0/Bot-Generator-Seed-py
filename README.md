@@ -7,12 +7,8 @@ It's used on my discord channel : https://discord.gg/psSGn45
 
 After cloning :
 - Run `initialize.sh` script to initialize submodules and copy random settings generator inside rando and settings
-- Go to settings and write inside `settings.sav.ran` and `settings.sav.std` the path for
-    - rom : The aboslute path for your n64 rom
-    - output_dir : The absolute path to ./files
-    - distribution_file : Only for `settings.sav.ran`, the absolute path to ./ootrando/OoT-Randomizer/mystery-plando.json
-- Create .env from .env.example and insert your Token and channel where the bot can answer, if there are multiple channel, you can seperate with comma
-like `channel1,channel2,channel3`
+- Create .env from .env.example and insert your Token, channelid where the bot can answer, rom path and outpath, if there are multiple channel, you can seperate with comma
+like `channelid1,channelid2,channelid3`
 
 ## To use
 
