@@ -94,6 +94,7 @@ async def help(ctx):
         embedVar.set_thumbnail(url="https://img.icons8.com/bubbles/2x/help.png")
         embedVar.add_field(name="!help", value="Display this message", inline=True)
         embedVar.add_field(name="!generate", value="Generate an OoT Randomizer seed. Usage: !generate [settings (standard(weekly), random, custom, s4)]", inline=True)
+        embedVar.add_field(name="BUGS", value="If a random seed is not gived or after 20min, regenerate because the seed is mostly **unbeatable**", inline=False)
         embedVar.set_footer(text=f"{GeneRawzV}, {OoTRV}")
         await ctx.send(embed=embedVar)
 

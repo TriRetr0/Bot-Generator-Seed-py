@@ -6,3 +6,5 @@ Command raised an exception: NameError: name 'setsettings' is not defined
 Command raised an exception: Forbidden: 403 Forbidden (error code: 50003): Cannot execute action on a DM channel
 ----------15-10-2020|18-44-41----------
 Command raised an exception: UnboundLocalError: local variable 'OoTRV' referenced before assignment
+----------15-10-2020|19-43-16----------
+Command "genrate" is not found
