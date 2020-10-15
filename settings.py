@@ -1,5 +1,5 @@
 import os
-def setsettings(ROMPATH, OUTPATH, custom="AJ2WBAVSA8EA2BCAAAAEUAAAFAACABSAGAC4SJJCX2GUZ7XRBWAKJA2UAAA6CFFAA"):
+def setsettings(ROMPATH, OUTPATH, custom=None):
     open("settings/settings.sav", "w").write("")
     numberlines = 0
     settingfile = open("settings/settings.sav.default", "r")

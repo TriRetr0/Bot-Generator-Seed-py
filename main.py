@@ -1,10 +1,10 @@
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+from settings import setsettings
 import os
 import sys
 import time
-from settings import setsettings
 load_dotenv()
 #intents = discord.Intents.default()
 #intents.typing = True
@@ -21,6 +21,8 @@ ROMPATH = os.getenv("ROMPATH")
 OUTPATH = os.getenv("OUTPATH")
 CHANNELSID = int(os.getenv("CHANNELSID"))
 
+
+
 @client.event
 async def on_ready():
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="!help"))
@@ -28,19 +30,22 @@ async def on_ready():
     print(os.getenv("CHANNELSID"))
     print(os.getenv("ROMPATH"))
 
+
+
 @client.command()
 async def generate(ctx, settings, custom="N/A"):
     await ctx.message.delete()
     if ctx.channel.id == CHANNELSID or ctx.guild == None:
+        OoTRV = open("OoT-Randomizer/version.py","r").read().split('\'')[1]
         for dir, sub_dirs, files in os.walk("files"):
             if files:
                 embedVar = discord.Embed(title="GeneRawz :", description=f"**Sorry, another seed is being generated**\nfor {ctx.author.mention}")
                 print("Someone has called !generate but another seed is being generated")
         if settings == "random":
-            os.system("cd OoT-Randomizer/plando-random-settings/ && python3 PlandoRandomSettings.py && cd ../..")
+            os.system("cd OoT-Randomizer && git checkout 6fe41cac9b324897ab8f0344bd337a54a0da6f35 && cd plando-random-settings && python3 PlandoRandomSettings.py && cd ../..")
+            OoTRV = open("OoT-Randomizer/version.py","r").read().split('\'')[1]
             embedVar = discord.Embed(title="GeneRawz :", description=f"Generating random seed in progress with OoTR: {OoTRV}\nfor {ctx.author.mention}")
             setsettings(ROMPATH, OUTPATH, "random")
-            print("test")
         elif settings == "standard":
             setsettings(ROMPATH, OUTPATH)
             embedVar = discord.Embed(title="GeneRawz :", description=f"Generating standard seed in progress with OoTR: {OoTRV}\nfor {ctx.author.mention}")
@@ -74,7 +79,12 @@ async def generate(ctx, settings, custom="N/A"):
             os.replace(f"files/{i}", f"files/{ctx.author.name} {i}")
             await ctx.send(file=discord.File(f'files/{ctx.author.name} {i}'))
             os.remove(f'files/{ctx.author.name} {i}')
+        if open("OoT-Randomizer/version.py","r").read().split('\'')[1] == "5.2.65 R-6":
+            os.system("cd OoT-Randomizer && git checkout Dev-R ; cd ..")
+            OoTRV = open("OoT-Randomizer/version.py","r").read().split('\'')[1]
         print('Seed removed')
+
+
 
 @client.command()
 async def help(ctx):
@@ -87,6 +97,8 @@ async def help(ctx):
         embedVar.set_footer(text=f"{GeneRawzV}, {OoTRV}")
         await ctx.send(embed=embedVar)
 
+
+
 @client.command()
 async def version(ctx):
     await ctx.message.delete()
@@ -94,6 +106,8 @@ async def version(ctx):
         embedVar = discord.Embed(title="GeneRawz:", description=f"GeneRawz: {GeneRawzV}, {OoTRV}\nOoT Randomizer: {OoTRV}")
         embedVar.set_thumbnail(url="https://cdn.discordapp.com/avatars/753907038035247194/f5de60765226054bc282234501a807f7.webp?size=64")
         await ctx.send(embed=embedVar)
+
+
 
 @client.event
 async def on_command_error(ctx, error):
@@ -105,5 +119,7 @@ async def on_command_error(ctx, error):
         date = time.strftime("%d-%m-%Y")
         hour = time.strftime("%H-%M-%S")
         open("errlogs", "a").write(f"----------{date}|{hour}----------\n{error}\n")
+
+
 
 client.run(os.getenv("TOKEN"))
