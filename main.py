@@ -49,8 +49,6 @@ async def generate(ctx, settings, custom="N/A"):
         elif settings == "standard":
             setsettings(ROMPATH, OUTPATH)
             embedVar = discord.Embed(title="GeneRawz :", description=f"Generating standard seed in progress with OoTR: {OoTRV}\nfor {ctx.author.mention}")
-        elif settings == "s4":
-            embedVar = discord.Embed(title="GeneRawz :", description=f"Generating standard seed in progress with OoTR: {OoTRV}\nfor {ctx.author.mention}")
         elif settings == "custom":
             if custom == "N/A":
                 embedVar = discord.Embed(title="ERROR:", description=f"```No settings string given```")
@@ -61,15 +59,13 @@ async def generate(ctx, settings, custom="N/A"):
                 embedVar = discord.Embed(title="GeneRawz :", description=f"Generating {custom} settings seed in progress with OoTR: {OoTRV}\nfor {ctx.author.mention}")
         else:
             embedVar = discord.Embed(title="ERROR:", description=f"```unrecognized settings```\nfor {ctx.author.mention}")
+            await ctx.send(embed=embedVar)
             return
         embedVar.set_footer(text=f"{GeneRawzV}, {OoTRV}")
         message = await ctx.send(embed=embedVar)
         print("Start Randomizer")
         if custom == "N/A":
-            if settings == "s4":
-                os.system(f'python3 OoT-Randomizer/OoTRandomizer.py --settings_string AATWXCBSKJA9EFSDEAAJACBBLTDDAWAAJAEAC2AJSDGBLADLED7JKQUXEAN3BAJAAWBCLAC')
-            else:
-                os.system('python3 OoT-Randomizer/OoTRandomizer.py')
+            os.system('python3 OoT-Randomizer/OoTRandomizer.py')
         else:
             os.system(f'cd OoT-Randomizer/ && python3 OoTRandomizer.py --settings_string {custom} && cd ..')
         print("Seed generated")
@@ -98,7 +94,7 @@ async def help(ctx):
         embedVar = discord.Embed(title="HELP - GeneRawz", description=f"for {ctx.author.mention}")
         embedVar.set_thumbnail(url="https://img.icons8.com/bubbles/2x/help.png")
         embedVar.add_field(name="!help", value="Display this message", inline=True)
-        embedVar.add_field(name="!generate", value="Generate an OoT Randomizer seed. Usage: !generate [settings (standard(weekly), random, custom, s4)]", inline=True)
+        embedVar.add_field(name="!generate", value="Generate an OoT Randomizer seed. Usage: !generate [settings (standard, random, custom)]", inline=True)
         embedVar.add_field(name="BUGS", value="If a random seed is not gived or after 20min, regenerate because the seed is mostly **unbeatable**", inline=False)
         embedVar.set_footer(text=f"{GeneRawzV}, {OoTRV}")
         await ctx.send(embed=embedVar)
