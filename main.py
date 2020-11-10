@@ -49,6 +49,8 @@ async def generate(ctx, settings, custom="N/A"):
         elif settings == "standard":
             setsettings(ROMPATH, OUTPATH)
             embedVar = discord.Embed(title="GeneRawz :", description=f"Generating standard seed in progress with OoTR: {OoTRV}\nfor {ctx.author.mention}")
+        elif settings == "s4":
+            embedVar = discord.Embed(title="GeneRawz :", description=f"Generating standard seed in progress with OoTR: {OoTRV}\nfor {ctx.author.mention}")
         elif settings == "custom":
             if custom == "N/A":
                 embedVar = discord.Embed(title="ERROR:", description=f"```No settings string given```")
@@ -64,9 +66,12 @@ async def generate(ctx, settings, custom="N/A"):
         message = await ctx.send(embed=embedVar)
         print("Start Randomizer")
         if custom == "N/A":
-            os.system('python3 OoT-Randomizer/OoTRandomizer.py')   
+            if settings == "s4":
+                os.system(f'python3 OoT-Randomizer/OoTRandomizer.py --settings_string AATWXCBSKJA9EFSDEAAJACBBLTDDAWAAJAEAC2AJSDGBLADLED7JKQUXEAN3BAJAAWBCLAC')
+            else:
+                os.system('python3 OoT-Randomizer/OoTRandomizer.py')
         else:
-            os.system('cd OoT-Randomizer/ && python3 OoTRandomizer.py --settings_string {custom} && cd ..')
+            os.system(f'cd OoT-Randomizer/ && python3 OoTRandomizer.py --settings_string {custom} && cd ..')
         print("Seed generated")
         embedVar = discord.Embed(title="GeneRawz :", description=f"Done. Settings: {settings}, {custom}\nFiles generated :\nfor {ctx.author.mention}")
         embedVar.set_thumbnail(url="https://cdn.discordapp.com/avatars/753907038035247194/f5de60765226054bc282234501a807f7.webp?size=64")
@@ -104,7 +109,7 @@ async def help(ctx):
 async def version(ctx):
     await ctx.message.delete()
     if ctx.channel.id == CHANNELSID or ctx.guild == None:
-        embedVar = discord.Embed(title="GeneRawz:", description=f"GeneRawz: {GeneRawzV}, {OoTRV}\nOoT Randomizer: {OoTRV}")
+        embedVar = discord.Embed(title="GeneRawz:", description=f"GeneRawz: {GeneRawzV}\nOoT Randomizer: {OoTRV}")
         embedVar.set_thumbnail(url="https://cdn.discordapp.com/avatars/753907038035247194/f5de60765226054bc282234501a807f7.webp?size=64")
         await ctx.send(embed=embedVar)
 

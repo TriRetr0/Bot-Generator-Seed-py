@@ -8,3 +8,5 @@ Command raised an exception: Forbidden: 403 Forbidden (error code: 50003): Canno
 Command raised an exception: UnboundLocalError: local variable 'OoTRV' referenced before assignment
 ----------15-10-2020|19-43-16----------
 Command "genrate" is not found
+----------10-11-2020|22-40-59----------
+Command "genarate" is not found
