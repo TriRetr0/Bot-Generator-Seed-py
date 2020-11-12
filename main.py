@@ -5,6 +5,7 @@ from settings import setsettings
 import os
 import sys
 import time
+import requests
 load_dotenv()
 #intents = discord.Intents.default()
 #intents.typing = True
@@ -14,9 +15,8 @@ load_dotenv()
 client = commands.Bot(command_prefix = '!')
 
 client.remove_command("help")
-
-GeneRawzV = open(".version","r").read().split('\'')[1]
 OoTRV = open("OoT-Randomizer/version.py","r").read().split('\'')[1]
+GeneRawzV = open(".version","r").read().split('\'')[1]
 ROMPATH = os.getenv("ROMPATH")
 OUTPATH = os.getenv("OUTPATH")
 CHANNELSID = int(os.getenv("CHANNELSID"))
@@ -33,16 +33,13 @@ async def on_ready():
 
 
 @client.command()
-async def generate(ctx, settings, custom="N/A"):
-    await ctx.message.delete()
-    if ctx.channel.id == CHANNELSID or ctx.guild == None:
+async def generate(ctx, settings="import", custom="N/A"):
         OoTRV = open("OoT-Randomizer/version.py","r").read().split('\'')[1]
-        for dir, sub_dirs, files in os.walk("files"):
-            if files:
-                embedVar = discord.Embed(title="GeneRawz :", description=f"**Sorry, another seed is being generated**\nfor {ctx.author.mention}")
-                print("Someone has called !generate but another seed is being generated")
-        if settings == "random":
-            os.system("cd OoT-Randomizer && git checkout 6fe41cac9b324897ab8f0344bd337a54a0da6f35 && cd plando-random-settings && python3 PlandoRandomSettings.py && cd ../..")
+        if ctx.message.attachments and settings == "import":
+            embedVar = discord.Embed(title="GeneRawz :", description=f"Generating import seed in progress with OoTR: {OoTRV}\nfor {ctx.author.mention}")
+            setsettings(ROMPATH, OUTPATH, "import")
+        elif settings == "random":
+            os.system("cd OoT-Randomizer && git checkout b670183e9aff520c20ac2ee65aa55e3740c5f4b4 && cd plando-random-settings && python3 PlandoRandomSettings.py && cd ../..")
             OoTRV = open("OoT-Randomizer/version.py","r").read().split('\'')[1]
             embedVar = discord.Embed(title="GeneRawz :", description=f"Generating random seed in progress with OoTR: {OoTRV}\nfor {ctx.author.mention}")
             setsettings(ROMPATH, OUTPATH, "random")
@@ -57,10 +54,12 @@ async def generate(ctx, settings, custom="N/A"):
             else:
                 setsettings(ROMPATH, OUTPATH, custom)
                 embedVar = discord.Embed(title="GeneRawz :", description=f"Generating {custom} settings seed in progress with OoTR: {OoTRV}\nfor {ctx.author.mention}")
-        else:
-            embedVar = discord.Embed(title="ERROR:", description=f"```unrecognized settings```\nfor {ctx.author.mention}")
+        elif settings == "import":
+            embedVar = discord.Embed(title="ERROR:", description=f"```no settings provided```\nfor {ctx.author.mention}")
             await ctx.send(embed=embedVar)
             return
+        else:
+            embedVar = discord.Embed(title="ERROR:", description=f"```unrecognized settings```\nfor {ctx.author.mention}")
         embedVar.set_footer(text=f"{GeneRawzV}, {OoTRV}")
         message = await ctx.send(embed=embedVar)
         print("Start Randomizer")
@@ -69,6 +68,8 @@ async def generate(ctx, settings, custom="N/A"):
         else:
             os.system(f'cd OoT-Randomizer/ && python3 OoTRandomizer.py --settings_string {custom} && cd ..')
         print("Seed generated")
+        for file in os.listdir("OoT-Randomizer/Logs"):
+            os.replace(f"OoT-Randomizer/Logs/{file}", "files/Generation logs")
         embedVar = discord.Embed(title="GeneRawz :", description=f"Done. Settings: {settings}, {custom}\nFiles generated :\nfor {ctx.author.mention}")
         embedVar.set_thumbnail(url="https://cdn.discordapp.com/avatars/753907038035247194/f5de60765226054bc282234501a807f7.webp?size=64")
         embedVar.set_footer(text=f"{GeneRawzV}, {OoTRV}")
@@ -82,34 +83,47 @@ async def generate(ctx, settings, custom="N/A"):
             os.remove(f'files/{ctx.author.name} {i}')
         if open("OoT-Randomizer/version.py","r").read().split('\'')[1] == "5.2.65 R-6":
             os.system("cd OoT-Randomizer && git checkout Dev-R ; cd ..")
-            OoTRV = open("OoT-Randomizer/version.py","r").read().split('\'')[1]
         print('Seed removed')
 
 
 
 @client.command()
 async def help(ctx):
-    await ctx.message.delete()
-    if ctx.channel.id == CHANNELSID or ctx.guild == None:
-        embedVar = discord.Embed(title="HELP - GeneRawz", description=f"for {ctx.author.mention}")
-        embedVar.set_thumbnail(url="https://img.icons8.com/bubbles/2x/help.png")
-        embedVar.add_field(name="!help", value="Display this message", inline=True)
-        embedVar.add_field(name="!generate", value="Generate an OoT Randomizer seed. Usage: !generate [settings (standard, random, custom)]", inline=True)
-        embedVar.add_field(name="BUGS", value="If a random seed is not gived or after 20min, regenerate because the seed is mostly **unbeatable**", inline=False)
-        embedVar.set_footer(text=f"{GeneRawzV}, {OoTRV}")
-        await ctx.send(embed=embedVar)
+    embedVar = discord.Embed(title="HELP - GeneRawz", description=f"for {ctx.author.mention}")
+    embedVar.set_thumbnail(url="https://img.icons8.com/bubbles/2x/help.png")
+    embedVar.add_field(name="!help", value="Display this message", inline=True)
+    embedVar.add_field(name="!generate", value="Generate an OoT Randomizer seed. Usage: !generate [settings (standard, random, custom)] or upload a settings file", inline=True)
+    embedVar.add_field(name="!version", value="Display bot and OoTR version", inline=True)
+    embedVar.add_field(name="SETTINGS FILE RULE:", value='Need to start with: ```json\n{\n    "rom": "",\n    "output_dir": "",\n    "enable_distribution_file": false,\n    ...```', inline=False)
+    embedVar.add_field(name="BUGS:", value="If a random seed is not gived or after 20min, regenerate because the seed is mostly **unbeatable**", inline=False)
+    embedVar.set_footer(text=f"{GeneRawzV}, {OoTRV}")
+    await ctx.send(embed=embedVar)
 
 
 
 @client.command()
 async def version(ctx):
-    await ctx.message.delete()
+    embedVar = discord.Embed(title="GeneRawz:", description=f"GeneRawz: {GeneRawzV}\nOoT Randomizer: {OoTRV}")
+    embedVar.set_thumbnail(url="https://cdn.discordapp.com/avatars/753907038035247194/f5de60765226054bc282234501a807f7.webp?size=64")
+    await ctx.send(embed=embedVar)
+
+@version.before_invoke
+@help.before_invoke
+@generate.before_invoke
+async def on_command_call(ctx):
     if ctx.channel.id == CHANNELSID or ctx.guild == None:
-        embedVar = discord.Embed(title="GeneRawz:", description=f"GeneRawz: {GeneRawzV}\nOoT Randomizer: {OoTRV}")
-        embedVar.set_thumbnail(url="https://cdn.discordapp.com/avatars/753907038035247194/f5de60765226054bc282234501a807f7.webp?size=64")
-        await ctx.send(embed=embedVar)
-
-
+        if ctx.message.attachments:
+            print("Attachements detected. Can't delete")
+            url = str(ctx.message.attachments[0]).split("'")[3].split("'")[0]
+            file = requests.get(url)
+            open("settings/settings.sav.import", "wb").write(file.content)
+        else:
+            if ctx.guild:
+                print("Attachements not detected. Deleted")
+                await ctx.message.delete()
+        print("Command can be invoke here")
+    else:
+        raise Exception('Not allowed here')
 
 @client.event
 async def on_command_error(ctx, error):

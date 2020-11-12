@@ -2,7 +2,10 @@ import os
 def setsettings(ROMPATH, OUTPATH, custom=None):
     open("settings/settings.sav", "w").write("")
     numberlines = 0
-    settingfile = open("settings/settings.sav.default", "r")
+    if custom == "import":
+        settingfile = open("settings/settings.sav.import", "r")
+    else:
+        settingfile = open("settings/settings.sav.default", "r")
     settingswrite = open("settings/settings.sav", "r+")
     for i in settingfile.readlines():
         if numberlines == 1:
