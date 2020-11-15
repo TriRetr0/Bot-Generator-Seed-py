@@ -1,7 +1,7 @@
 # Bot-Generator-Seed
 
 This is a repository to the discord bot ho generate standard and random settings seed.
-It's used on my discord channel : https://discord.gg/psSGn45
+It's used on my discord channel : [Join](https://discord.gg/psSGn45)
 
 ## Installation
 
