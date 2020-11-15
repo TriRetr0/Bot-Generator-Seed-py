@@ -30,7 +30,9 @@ Can be used in multiple servers in the same time
 
 Import a settings file with attachements or url `!generate import url` or `!generate` if you upload a settings file
 Fixing some bugs
+
 Generation logs now given after generation and can tell you if the generation contain errors
+
 Color status :
 ```
 Red = Fatal error during generation
