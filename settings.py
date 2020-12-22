@@ -4,6 +4,8 @@ def setsettings(ROMPATH, OUTPATH, custom=None):
     numberlines = 0
     if custom == "import":
         settingfile = open("settings/settings.sav.import", "r")
+    if custom == "s4":
+        settingfile = open("settings/settings.sav.s4", "r")
     else:
         settingfile = open("settings/settings.sav.default", "r")
     settingswrite = open("settings/settings.sav", "r+")

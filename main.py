@@ -3,6 +3,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from settings import setsettings
 import os
+import subprocess
 import sys
 import re
 import time
@@ -37,10 +38,14 @@ async def generate(ctx, settings="import", custom="N/A", spoil=True):
             embedVar = discord.Embed(title="GeneRawz :", description=f"Generating import seed in progress with OoTR: {OoTRV}\nfor {ctx.author.mention}")
             setsettings(ROMPATH, OUTPATH, "import")
         elif settings == "random":
-            os.system("cd OoT-Randomizer && git checkout b670183e9aff520c20ac2ee65aa55e3740c5f4b4 && cd plando-random-settings && python3 PlandoRandomSettings.py && cd ../..")
+            os.system("cd OoT-Randomizer && git checkout 4f83414c49ff65ef2eb285667bcb153f11f1f9ef && cd plando-random-settings && python3 PlandoRandomSettings.py")
             OoTRV = open("OoT-Randomizer/version.py","r").read().split('\'')[1]
             embedVar = discord.Embed(title="GeneRawz :", description=f"Generating random seed in progress with OoTR: {OoTRV}\nfor {ctx.author.mention}")
             setsettings(ROMPATH, OUTPATH, "random")
+        elif settings == "s4":
+            OoTRV = open("OoT-Randomizer/version.py","r").read().split('\'')[1]
+            embedVar = discord.Embed(title="GeneRawz :", description=f"Generating random seed in progress with OoTR: {OoTRV}\nfor {ctx.author.mention}")
+            setsettings(ROMPATH, OUTPATH, "s4")
         elif settings == "standard":
             setsettings(ROMPATH, OUTPATH)
             embedVar = discord.Embed(title="GeneRawz :", description=f"Generating standard seed in progress with OoTR: {OoTRV}\nfor {ctx.author.mention}")
@@ -71,9 +76,9 @@ async def generate(ctx, settings="import", custom="N/A", spoil=True):
         print("Start Randomizer")
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f"!generate {settings}"))
         if settings != "custom":
-            os.system('python3 OoT-Randomizer/OoTRandomizer.py')
+            subprocess.call(['python3', 'OoT-Randomizer/OoTRandomizer.py'])
         else:
-            os.system(f'cd OoT-Randomizer/ && python3 OoTRandomizer.py --settings_string {custom} && cd ..')
+            subprocess.call(["python3", "OoT-Randomizer/OoTRandomizer.py", f"--settings_string {custom}"], shell=True)
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f"Done."))
         print("Seed generated")
         embedVar = None
@@ -82,13 +87,13 @@ async def generate(ctx, settings="import", custom="N/A", spoil=True):
                 os.replace(f"OoT-Randomizer/Logs/{file}", f"{OUTPATH}/Generation logs")
             fileread = open(f"{OUTPATH}/Generation logs", "r")
             for line in fileread:
-                if re.search("UNBEATABLE", line):
+                if re.search("unbeatable", line):
                     print("UNBEATABLE")
                     embedVar = discord.Embed(title="GeneRawz :", description=f":warning: Done. Settings: {settings}, {custom}\n```{line}```\nFiles generated :\nfor {ctx.author.mention}", color=0xffff00)
                 elif re.search("Failed attempt 1 of 10: Entrance placement attempt count exceeded for world 0", line):
                     embedVar = discord.Embed(title="GeneRawz :", description=f":warning: Done. Settings: {settings}, {custom}\n```{line}```\nFiles generated :\nfor {ctx.author.mention}", color=0x0000ff)
                 elif re.search("Not enough gossip stone locations for fixed hint type woth.", line):
-                    embedVar = discord.Embed(title="GeneRawz :", description=f":no_entry_sign: Totally failed... Try again. Settings: {settings}, {custom}\n```{line}```\nFiles generated :\nfor {ctx.author.mention}", color=0xff0000)
+                    embedVar = discord.Embed(title="GeneRawz :", description=f":no_entry_sign: Failed... Try again. Settings: {settings}, {custom}\n```{line}```\nFiles generated :\nfor {ctx.author.mention}", color=0xff0000)
                 elif re.search("No more valid entrances to replace", line):
                     embedVar = discord.Embed(title="GeneRawz :", description=f":ok: Done. Settings: {settings}, {custom}\n```{line}```\nFiles generated :\nfor {ctx.author.mention}", color=0x0000ff)
             if embedVar == None:
@@ -119,6 +124,14 @@ async def set_channel(ctx, Channel=None):
     embedVar.set_thumbnail(url=f"{client.user.avatar_url}")
     await ctx.send(embed=embedVar)
 
+@client.command()
+async def update(ctx, tree="Dev-R"):
+    if ctx.author.id == 536113170138398750 or ctx.author.id == 281178886514016257:
+        os.system(f"cd OoT-Randomizer && git add . && git pull origin {tree} && cd ..")
+        await ctx.message.add_reaction("✔️")
+    else:
+        await ctx.message.add_reaction("❌")
+
 
 @client.command()
 async def help(ctx):
@@ -138,7 +151,7 @@ async def help(ctx):
 @help.before_invoke
 @generate.before_invoke
 async def on_command_call(ctx):
-    if ctx.channel.id == int(open(f"database/{ctx.guild.id}", "r").read()) or ctx.guild == None:
+    if ctx.guild == None or ctx.channel.id == int(open(f"database/{ctx.guild.id}", "r").read()):
         if ctx.message.attachments:
             print("Attachements detected. Can't delete")
             url = str(ctx.message.attachments[0]).split("'")[3].split("'")[0]
@@ -170,7 +183,7 @@ async def on_generate_exit(ctx):
 
 @client.event
 async def on_command_error(ctx, error):
-    if ctx.channel.id == int(open(f"database/{ctx.guild.id}", "r").read()) or ctx.guild == None:
+    if ctx.guild == None or ctx.channel.id == int(open(f"database/{ctx.guild.id}", "r").read()):
         embedVar = discord.Embed(title="ERROR:", description=f'```py\n{error}```\nfor {ctx.author.mention}, <@&764216400184737803>', color=0xff0000)
         embedVar.set_footer(text=f"!help for information\n{GeneRawzV}, {OoTRV}")
         await ctx.send(embed=embedVar)
